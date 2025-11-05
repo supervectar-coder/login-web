@@ -9,6 +9,7 @@ body{font-family:Arial;background:#eef2f3;display:flex;justify-content:center;al
 input,button{width:100%;padding:8px;margin:5px 0;border-radius:6px;border:1px solid #ccc}
 button{background:#2563eb;color:white;border:0;cursor:pointer}
 a{cursor:pointer;color:#2563eb;font-size:13px;text-align:center;display:block;margin-top:8px}
+#msg{font-size:13px;margin-bottom:10px;color:#dc2626}
 </style>
 </head>
 <body>
@@ -20,12 +21,17 @@ a{cursor:pointer;color:#2563eb;font-size:13px;text-align:center;display:block;ma
   <input id="password" type="password" placeholder="Contraseña">
   <button id="actionBtn">Entrar</button>
   <a id="toggle">Crear cuenta</a>
+  <a id="resetPass">¿Olvidaste tu contraseña?</a>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } 
-from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+import { 
+  getAuth, 
+  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword, 
+  sendPasswordResetEmail 
+} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
 /* 🔥 CONFIG FIREBASE 🔥 */
 const firebaseConfig = {
@@ -39,35 +45,60 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app); /* ✅ Crear auth */
+const auth = getAuth(app);
 
-/* ✅ Lógica Login/Registro */
+/* ✅ Alternar login / registro */
 let mode = "login";
 document.getElementById("toggle").onclick = () =>{
   mode = mode === "login" ? "register" : "login";
-  document.getElementById("modeText").textContent = mode==="login"?"Iniciar sesión":"Crear cuenta";
-  document.getElementById("actionBtn").textContent = mode==="login"?"Entrar":"Registrarse";
+  document.getElementById("modeText").textContent = mode === "login" ? "Iniciar sesión" : "Crear cuenta";
+  document.getElementById("actionBtn").textContent = mode === "login" ? "Entrar" : "Registrarse";
 };
 
+/* ✅ Login o Registro */
 document.getElementById("actionBtn").onclick = async ()=>{
   const emailVal = email.value;
   const passVal = password.value;
   const msg = document.getElementById("msg");
 
   try {
-    if(mode==="register"){
+    if(mode === "register"){
       await createUserWithEmailAndPassword(auth, emailVal, passVal);
+      msg.style.color="green";
       msg.textContent = "✅ Cuenta creada";
     } else {
       await signInWithEmailAndPassword(auth, emailVal, passVal);
+      msg.style.color="green";
       msg.textContent = "✅ Inicio exitoso";
       window.location = "dashboard.html";
     }
   }
   catch(e){
+    msg.style.color="red";
     msg.textContent = "❌ " + e.message;
   }
-}
+};
+
+/* ✅ Recuperar contraseña */
+document.getElementById("resetPass").onclick = async () => {
+  const emailVal = email.value;
+  const msg = document.getElementById("msg");
+
+  if (!emailVal) {
+    msg.style.color="red";
+    msg.textContent = "❌ Escribe tu email para recuperar la contraseña";
+    return;
+  }
+
+  try {
+    await sendPasswordResetEmail(auth, emailVal);
+    msg.style.color="green";
+    msg.textContent = "📩 Se envió un email para restablecer tu contraseña";
+  } catch (e) {
+    msg.style.color="red";
+    msg.textContent = "❌ " + e.message;
+  }
+};
 </script>
 
 </body>

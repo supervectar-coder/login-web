@@ -3,22 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <title>Dashboard</title>
-<style>
-body{font-family:Arial;background:#f4f6f8;margin:0;display:flex;justify-content:center;align-items:center;height:100vh}
-.card{background:white;padding:20px;border-radius:10px;width:350px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,0.1)}
-button{padding:10px 15px;border:0;background:#dc2626;color:white;border-radius:6px;cursor:pointer;width:100%}
-h2{color:#111827}
-p{font-size:14px;color:#374151;margin-bottom:20px}
-</style>
 </head>
 
 <body>
-
-<div class="card">
-  <h2>Bienvenido 🎉</h2>
-  <p id="userEmail">Cargando...</p>
-  <button id="logoutBtn">Cerrar sesión</button>
-</div>
+<p>Redirigiendo...</p>
 
 <script type="module">
 import { getAuth, onAuthStateChanged, signOut }
@@ -26,21 +14,18 @@ from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
 const auth = getAuth();
 
-/* ✅ Verifica si hay usuario logueado */
+// ✅ URL a donde redirigir DESPUÉS del login
+const targetURL = "https://tu-web-o-lo-que-quieras.com";
+
 onAuthStateChanged(auth, (user) => {
   if (!user) {
+    // No logueado → volver a login
     window.location = "index.html";
   } else {
-    document.getElementById("userEmail").textContent = 
-      "Has iniciado sesión como: " + user.email;
+    // ✅ Logueado → redirigir a tu URL
+    window.location = targetURL;
   }
 });
-
-/* ✅ Cerrar sesión */
-document.getElementById("logoutBtn").onclick = async () => {
-  await signOut(auth);
-  window.location = "index.html";
-}
 </script>
 
 </body>

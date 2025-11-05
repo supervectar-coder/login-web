@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Usuarios Registrados</title>
+
+<style>
+body{font-family:Arial;background:#f5f7fa;padding:20px}
+table{width:100%;border-collapse:collapse;background:white;border-radius:8px;overflow:hidden}
+th,td{padding:10px;border-bottom:1px solid #ddd;text-align:left}
+th{background:#2563eb;color:white}
+button{padding:6px 10px;border:0;border-radius:6px;cursor:pointer}
+.btn-delete{background:#dc2626;color:white}
+.btn-back{background:#2563eb;color:white;margin-top:15px}
+</style>
+</head>
+<body>
+
+<h2>Usuarios registrados</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Email</th>
+      <th>Contraseña (demo)</th>
+      <th>Acción</th>
+    </tr>
+  </thead>
+  <tbody id="lista"></tbody>
+</table>
+
+<button class="btn-back" onclick="volver()">Volver</button>
+
+<script>
+function cargarUsuarios(){
+  const users = JSON.parse(localStorage.getItem("users") || "{}");
+  const tbody = document.getElementById("lista");
+  tbody.innerHTML = "";
+
+  if(Object.keys(users).length === 0){
+    tbody.innerHTML = "<tr><td colspan='3'>No hay usuarios registrados</td></tr>";
+    return;
+  }
+
+  for (let email in users){
+    let row = `
+      <tr>
+        <td>${email}</td>
+        <td>${users[email]}</td>
+        <td><button class="btn-delete" onclick="eliminarUsuario('${email}')">Eliminar</button></td>
+      </tr>`;
+    tbody.innerHTML += row;
+  }
+}
+
+function eliminarUsuario(email){
+  const users = JSON.parse(localStorage.getItem("users") || "{}");
+  delete users[email];
+  localStorage.setItem("users", JSON.stringify(users));
+  alert(`Usuario eliminado: ${email}`);
+  cargarUsuarios(); // actualizar tabla
+}
+
+function volver(){
+  window.location.href = "index.html"; // o login.html según tu archivo
+}
+
+cargarUsuarios();
+</script>
+
+</body>
+</html>

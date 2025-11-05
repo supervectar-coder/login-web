@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Redirigiendo...</title>
+</head>
+<body>
+
+<script>
+// Verificar sesión
+const session = localStorage.getItem("session");
+if (!session) {
+  // Si no hay sesión → vuelve al login
+  window.location.href = "login.html";
+} else {
+  // URL a la que quieres redirigir después de login
+  const urlRedirect = "https://www.google.com"; // 👈 Cambia esta URL
+
+  // Opcional: puedes ver quién entró en consola
+  console.log("Usuario:", session);
+
+  // Redirigir
+  window.location.href = urlRedirect;
+}
+</script>
+
+</body>
+</html>

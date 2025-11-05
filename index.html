@@ -27,7 +27,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebas
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } 
 from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
-/* 🔥 TU CONFIG FIREBASE AQUÍ 🔥 */
+/* 🔥 CONFIG FIREBASE 🔥 */
 const firebaseConfig = {
   apiKey: "AIzaSyB3q8ovMF8gTlyntJCgSt9Zoer7zZRYJAg",
   authDomain: "login-web-b3605.firebaseapp.com",
@@ -38,10 +38,10 @@ const firebaseConfig = {
   measurementId: "G-EJGS4HJXKM"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+const auth = getAuth(app); /* ✅ Crear auth */
 
+/* ✅ Lógica Login/Registro */
 let mode = "login";
 document.getElementById("toggle").onclick = () =>{
   mode = mode === "login" ? "register" : "login";
@@ -50,16 +50,16 @@ document.getElementById("toggle").onclick = () =>{
 };
 
 document.getElementById("actionBtn").onclick = async ()=>{
-  const email = email.value;
-  const pass = password.value;
+  const emailVal = email.value;
+  const passVal = password.value;
   const msg = document.getElementById("msg");
 
   try {
     if(mode==="register"){
-      await createUserWithEmailAndPassword(auth, email, pass);
+      await createUserWithEmailAndPassword(auth, emailVal, passVal);
       msg.textContent = "✅ Cuenta creada";
     } else {
-      await signInWithEmailAndPassword(auth, email, pass);
+      await signInWithEmailAndPassword(auth, emailVal, passVal);
       msg.textContent = "✅ Inicio exitoso";
       window.location = "dashboard.html";
     }

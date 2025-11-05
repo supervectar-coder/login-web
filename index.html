@@ -1,77 +1,74 @@
 <!doctype html>
-<html lang="es">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login / Registro</title>
+<title>Login Firebase</title>
 <style>
 body{font-family:Arial;background:#eef2f3;display:flex;justify-content:center;align-items:center;height:100vh}
 .card{background:white;padding:20px;border-radius:10px;width:300px;box-shadow:0 4px 12px rgba(0,0,0,0.1)}
-input{width:100%;padding:8px;margin:5px 0;border:1px solid #ccc;border-radius:6px}
-button{width:100%;padding:10px;background:#2563eb;color:white;border:0;border-radius:6px;cursor:pointer;margin-top:10px}
-a{cursor:pointer;color:#2563eb;font-size:13px;display:block;margin-top:8px;text-align:center}
-.message{font-size:14px;margin-top:8px}
-.error{color:#c70000}
-.success{color:#0a7a00}
+input,button{width:100%;padding:8px;margin:5px 0;border-radius:6px;border:1px solid #ccc}
+button{background:#2563eb;color:white;border:0;cursor:pointer}
+a{cursor:pointer;color:#2563eb;font-size:13px;text-align:center;display:block;margin-top:8px}
 </style>
 </head>
 <body>
 
 <div class="card">
-  <h2 id="title">Iniciar sesión</h2>
-
-  <div id="msg" class="message"></div>
-
-  <input type="email" id="email" placeholder="Email">
-  <input type="password" id="password" placeholder="Contraseña">
-
-  <button id="btn-action">Entrar</button>
+  <h2 id="modeText">Iniciar sesión</h2>
+  <div id="msg"></div>
+  <input id="email" type="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Contraseña">
+  <button id="actionBtn">Entrar</button>
   <a id="toggle">Crear cuenta</a>
 </div>
 
-<script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } 
+from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
+/* 🔥 TU CONFIG FIREBASE AQUÍ 🔥 */
+const firebaseConfig = {
+  apiKey: "AIzaSyB3q8ovMF8gTlyntJCgSt9Zoer7zZRYJAg",
+  authDomain: "login-web-b3605.firebaseapp.com",
+  projectId: "login-web-b3605",
+  storageBucket: "login-web-b3605.firebasestorage.app",
+  messagingSenderId: "235710234631",
+  appId: "1:235710234631:web:7e99660e671ff4c6e42aa2",
+  measurementId: "G-EJGS4HJXKM"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
 let mode = "login";
-
-document.getElementById("toggle").onclick = () => {
+document.getElementById("toggle").onclick = () =>{
   mode = mode === "login" ? "register" : "login";
-  document.getElementById("title").textContent = mode === "login" ? "Iniciar sesión" : "Crear cuenta";
-  document.getElementById("btn-action").textContent = mode === "login" ? "Entrar" : "Registrarse";
-  document.getElementById("msg").textContent = "";
+  document.getElementById("modeText").textContent = mode==="login"?"Iniciar sesión":"Crear cuenta";
+  document.getElementById("actionBtn").textContent = mode==="login"?"Entrar":"Registrarse";
 };
 
-document.getElementById("btn-action").onclick = function(){
-  const email = document.getElementById("email").value.trim().toLowerCase();
-  const password = document.getElementById("password").value;
+document.getElementById("actionBtn").onclick = async ()=>{
+  const email = email.value;
+  const pass = password.value;
+  const msg = document.getElementById("msg");
 
-  if(!email || !password){
-    show("Completa todos los campos", "error"); return;
-  }
-
-  let users = JSON.parse(localStorage.getItem("users") || "{}");
-
-  if(mode === "register"){
-    if(users[email]) return show("Ese email ya está registrado", "error");
-    users[email] = password;
-    localStorage.setItem("users", JSON.stringify(users));
-    show("Cuenta creada ✅ Ahora inicia sesión","success");
-    mode = "login";
-    return;
-  }
-
-  if(mode === "login"){
-    if(!users[email] || users[email] !== password){
-      return show("Email o contraseña incorrectos", "error");
+  try {
+    if(mode==="register"){
+      await createUserWithEmailAndPassword(auth, email, pass);
+      msg.textContent = "✅ Cuenta creada";
+    } else {
+      await signInWithEmailAndPassword(auth, email, pass);
+      msg.textContent = "✅ Inicio exitoso";
+      window.location = "dashboard.html";
     }
-
-    localStorage.setItem("session", email);
-    window.location.href = "dashboard.html";
   }
-};
-
-function show(text,type){
-  document.getElementById("msg").textContent = text;
-  document.getElementById("msg").className = "message " + type;
+  catch(e){
+    msg.textContent = "❌ " + e.message;
+  }
 }
 </script>
+
 </body>
 </html>

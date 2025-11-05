@@ -9,25 +9,36 @@
 <p>Redirigiendo...</p>
 
 <script type="module">
-import { getAuth, onAuthStateChanged, signOut }
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+import { getAuth, onAuthStateChanged } 
 from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
-const auth = getAuth();
+/* ✅ COPY SAME FIREBASE CONFIG FROM index.html */
+const firebaseConfig = {
+  apiKey: "AIzaSyB3q8ovMF8gTlyntJCgSt9Zoer7zZRYJAg",
+  authDomain: "login-web-b3605.firebaseapp.com",
+  projectId: "login-web-b3605",
+  storageBucket: "login-web-b3605.firebasestorage.app",
+  messagingSenderId: "235710234631",
+  appId: "1:235710234631:web:7e99660e671ff4c6e42aa2",
+  measurementId: "G-EJGS4HJXKM"
+};
 
-// ✅ URL a donde redirigir DESPUÉS del login
-const targetURL = "https://www.google.com";
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
+/* ✅ URL destino */
+const targetURL = "https://google.com"; // Cambia esta URL
+
+/* ✅ Detectar usuario y redirigir */
 onAuthStateChanged(auth, (user) => {
   if (!user) {
-    // No logueado → volver a login
-    window.location = "index.html";
+    window.location = "index.html"; // si no está logueado, vuelve al login
   } else {
-    // ✅ Logueado → redirigir a tu URL
-    window.location = targetURL;
+    window.location = targetURL; // si está logueado, redirige a URL
   }
 });
 </script>
 
 </body>
 </html>
-

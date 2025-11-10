@@ -4,17 +4,61 @@
 <meta charset="UTF-8">
 <title>Login Firebase</title>
 <style>
-body{font-family:Arial;background:#eef2f3;display:flex;justify-content:center;align-items:center;height:100vh}
-.card{background:white;padding:20px;border-radius:10px;width:300px;box-shadow:0 4px 12px rgba(0,0,0,0.1)}
-input,button{width:100%;padding:8px;margin:5px 0;border-radius:6px;border:1px solid #ccc}
-button{background:#2563eb;color:white;border:0;cursor:pointer}
-a{cursor:pointer;color:#2563eb;font-size:13px;text-align:center;display:block;margin-top:8px}
-#msg{font-size:13px;margin-bottom:10px;color:#dc2626}
+body{
+  font-family:Arial;
+  background:#eef2f3;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh
+}
+.card{
+  background:white;
+  padding:20px;
+  border-radius:10px;
+  width:300px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.1)
+}
+input,button{
+  width:100%;
+  padding:8px;
+  margin:5px 0;
+  border-radius:6px;
+  border:1px solid #ccc
+}
+button{
+  background:#2563eb;
+  color:white;
+  border:0;
+  cursor:pointer
+}
+a{
+  cursor:pointer;
+  color:#2563eb;
+  font-size:13px;
+  text-align:center;
+  display:block;
+  margin-top:8px
+}
+#msg{
+  font-size:13px;
+  margin-bottom:10px;
+  color:#dc2626
+}
 </style>
 </head>
 <body>
 
 <div class="card">
+
+  <!-- Logo -->
+  <img src="https://i.ibb.co/FnGwW1c/Logo.png"
+       alt="Logo"
+       style="width:80px; display:block; margin:0 auto 10px;">
+
+  <!-- Título -->
+  <h1 style="text-align:center; margin-bottom:10px; font-size:22px;">SUPERVECTAR WEB</h1>
+
   <h2 id="modeText">Iniciar sesión</h2>
   <div id="msg"></div>
   <input id="email" type="email" placeholder="Email">
@@ -33,7 +77,6 @@ import {
   sendPasswordResetEmail 
 } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
-/* 🔥 CONFIG FIREBASE 🔥 */
 const firebaseConfig = {
   apiKey: "AIzaSyB3q8ovMF8gTlyntJCgSt9Zoer7zZRYJAg",
   authDomain: "login-web-b3605.firebaseapp.com",
@@ -47,15 +90,13 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-/* ✅ Alternar login / registro */
 let mode = "login";
-document.getElementById("toggle").onclick = () =>{
+document.getElementById("toggle").onclick = ()=>{
   mode = mode === "login" ? "register" : "login";
   document.getElementById("modeText").textContent = mode === "login" ? "Iniciar sesión" : "Crear cuenta";
   document.getElementById("actionBtn").textContent = mode === "login" ? "Entrar" : "Registrarse";
 };
 
-/* ✅ Login o Registro */
 document.getElementById("actionBtn").onclick = async ()=>{
   const emailVal = email.value;
   const passVal = password.value;
@@ -70,7 +111,7 @@ document.getElementById("actionBtn").onclick = async ()=>{
       await signInWithEmailAndPassword(auth, emailVal, passVal);
       msg.style.color="green";
       msg.textContent = "✅ Inicio exitoso";
-      window.location = "dashboard.html";
+      window.location.href = "dashboard.html";
     }
   }
   catch(e){
@@ -79,7 +120,6 @@ document.getElementById("actionBtn").onclick = async ()=>{
   }
 };
 
-/* ✅ Recuperar contraseña */
 document.getElementById("resetPass").onclick = async () => {
   const emailVal = email.value;
   const msg = document.getElementById("msg");

@@ -1,174 +1,381 @@
 <!doctype html>
-<html>
+<html lang="es">
+
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Login Firebase</title>
+
 <style>
+
 body{
-  font-family:Arial;
-  background:#eef2f3;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh
+  font-family: Arial, sans-serif;
+  background: #eef2f3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
 }
+
 .card{
-  background:white;
-  padding:20px;
-  border-radius:10px;
-  width:300px;
-  box-shadow:0 4px 12px rgba(0,0,0,0.1)
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 320px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
-input,button{
-  width:100%;
-  padding:8px;
-  margin:5px 0;
-  border-radius:6px;
-  border:1px solid #ccc
-}
+
+input,
 button{
-  background:#2563eb;
-  color:white;
-  border:0;
-  cursor:pointer
+  width: 100%;
+  padding: 10px;
+  margin: 6px 0;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
 }
+
+button{
+  background: #2563eb;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button:hover{
+  opacity: 0.9;
+}
+
 a{
-  cursor:pointer;
-  color:#2563eb;
-  font-size:13px;
-  text-align:center;
-  display:block;
-  margin-top:8px
+  cursor: pointer;
+  color: #2563eb;
+  font-size: 13px;
+  text-align: center;
+  display: block;
+  margin-top: 8px;
+  text-decoration: none;
 }
+
 #msg{
-  font-size:13px;
-  margin-bottom:10px;
-  color:#dc2626
+  font-size: 13px;
+  margin-bottom: 10px;
+  text-align: center;
 }
+
+.logo{
+  width: 80px;
+  display: block;
+  margin: 0 auto 10px;
+}
+
 </style>
 </head>
+
 <body>
 
 <div class="card">
 
-  <img src="https://i.ibb.co/7dGjZb80/6.jpg"
-       alt="Logo"
-       style="width:80px; display:block; margin:0 auto 10px;">
+  <img
+    src="https://i.ibb.co/7dGjZb80/6.jpg"
+    alt="Logo"
+    class="logo"
+  >
 
-  <h1 style="text-align:center; margin-bottom:10px; font-size:22px;">SUPERVECTAR WEB</h1>
+  <h1 style="text-align:center; font-size:22px;">
+    SUPERVECTAR WEB
+  </h1>
 
   <h2 id="modeText">Iniciar sesión</h2>
-  <div id="msg"></div>
-  <input id="email" type="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Contraseña">
 
-  <!-- Recordar sesión -->
-  <label style="display:flex; align-items:center; font-size:13px; margin-top:5px;">
-    <input type="checkbox" id="remember" style="width:auto; margin-right:5px;">
+  <div id="msg"></div>
+
+  <input
+    id="email"
+    type="email"
+    placeholder="Email"
+  >
+
+  <input
+    id="password"
+    type="password"
+    placeholder="Contraseña"
+  >
+
+  <label style="display:flex; align-items:center; font-size:13px;">
+    <input
+      type="checkbox"
+      id="remember"
+      style="width:auto; margin-right:5px;"
+    >
     Recordar sesión
   </label>
 
-  <button id="actionBtn">Entrar</button>
-  <a id="toggle">Iniciar sesión / Crear cuenta</a>
-  <a id="resetPass">¿Olvidaste tu contraseña?</a>
+  <button id="actionBtn">
+    Entrar
+  </button>
+
+  <a id="toggle">
+    Iniciar sesión / Crear cuenta
+  </a>
+
+  <a id="resetPass">
+    ¿Olvidaste tu contraseña?
+  </a>
+
 </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-import { 
-  getAuth, 
-  createUserWithEmailAndPassword, 
-  signInWithEmailAndPassword, 
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
   sendPasswordResetEmail,
   setPersistence,
   browserLocalPersistence,
-  browserSessionPersistence
-} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+  browserSessionPersistence,
+  onAuthStateChanged
+}
+from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
+
+/* Firebase Config */
 
 const firebaseConfig = {
+
   apiKey: "AIzaSyB3q8ovMF8gTlyntJCgSt9Zoer7zZRYJAg",
+
   authDomain: "login-web-b3605.firebaseapp.com",
+
   projectId: "login-web-b3605",
-  storageBucket: "login-web-b3605.firebasestorage.app",
+
+  storageBucket: "login-web-b3605.appspot.com",
+
   messagingSenderId: "235710234631",
+
   appId: "1:235710234631:web:7e99660e671ff4c6e42aa2",
+
   measurementId: "G-EJGS4HJXKM"
 };
 
+
+/* Inicializar Firebase */
+
 const app = initializeApp(firebaseConfig);
+
 const auth = getAuth(app);
 
-/* Cargar email recordado si existe */
+
+/* Elementos */
+
+const emailInput = document.getElementById("email");
+
+const passwordInput = document.getElementById("password");
+
+const rememberCheck = document.getElementById("remember");
+
+const msg = document.getElementById("msg");
+
+
+/* Cargar email guardado */
+
 const savedEmail = localStorage.getItem("savedEmail");
-if (savedEmail) {
-  document.getElementById("email").value = savedEmail;
-  document.getElementById("remember").checked = true;
+
+if(savedEmail){
+
+  emailInput.value = savedEmail;
+
+  rememberCheck.checked = true;
 }
 
-/* Alternar modo */
+
+/* Cambiar modo login/registro */
+
 let mode = "login";
-document.getElementById("toggle").onclick = ()=>{
-  mode = mode === "login" ? "register" : "login";
-  document.getElementById("modeText").textContent = mode === "login" ? "Iniciar sesión" : "Crear cuenta";
-  document.getElementById("actionBtn").textContent = mode === "login" ? "Entrar" : "Registrarse";
+
+document.getElementById("toggle").onclick = () => {
+
+  mode = mode === "login"
+    ? "register"
+    : "login";
+
+  document.getElementById("modeText").textContent =
+    mode === "login"
+      ? "Iniciar sesión"
+      : "Crear cuenta";
+
+  document.getElementById("actionBtn").textContent =
+    mode === "login"
+      ? "Entrar"
+      : "Registrarse";
 };
 
-/* Login o registro */
-document.getElementById("actionBtn").onclick = async ()=>{
-  const emailVal = email.value;
-  const passVal = password.value;
-  const remember = document.getElementById("remember").checked;
-  const msg = document.getElementById("msg");
 
-  try {
-    const persistence = remember ? browserLocalPersistence : browserSessionPersistence;
+/* Login o registro */
+
+document.getElementById("actionBtn").onclick = async () => {
+
+  const emailVal = emailInput.value.trim();
+
+  const passVal = passwordInput.value.trim();
+
+  const remember = rememberCheck.checked;
+
+  msg.textContent = "";
+
+  if(!emailVal || !passVal){
+
+    msg.style.color = "red";
+
+    msg.textContent = "❌ Completa todos los campos";
+
+    return;
+  }
+
+  if(passVal.length < 6){
+
+    msg.style.color = "red";
+
+    msg.textContent =
+      "❌ La contraseña debe tener mínimo 6 caracteres";
+
+    return;
+  }
+
+  try{
+
+    const persistence =
+      remember
+        ? browserLocalPersistence
+        : browserSessionPersistence;
+
     await setPersistence(auth, persistence);
 
-    /* Guardar o eliminar email */
-    if (remember) {
+    if(remember){
+
       localStorage.setItem("savedEmail", emailVal);
-    } else {
+
+    }else{
+
       localStorage.removeItem("savedEmail");
     }
 
     if(mode === "register"){
-      await createUserWithEmailAndPassword(auth, emailVal, passVal);
-      msg.style.color="green";
-      msg.textContent = "✅ Cuenta creada";
-    } else {
-      await signInWithEmailAndPassword(auth, emailVal, passVal);
-      msg.style.color="green";
+
+      await createUserWithEmailAndPassword(
+        auth,
+        emailVal,
+        passVal
+      );
+
+      msg.style.color = "green";
+
+      msg.textContent = "✅ Cuenta creada correctamente";
+
+    }else{
+
+      await signInWithEmailAndPassword(
+        auth,
+        emailVal,
+        passVal
+      );
+
+      msg.style.color = "green";
+
       msg.textContent = "✅ Inicio exitoso";
-      window.location.href = "dashboard.html";
+
+      setTimeout(() => {
+
+        window.location.href = "dashboard.html";
+
+      }, 1000);
     }
-  }
-  catch(e){
-    msg.style.color="red";
-    msg.textContent = "❌ " + e.message;
+
+  }catch(e){
+
+    msg.style.color = "red";
+
+    switch(e.code){
+
+      case "auth/invalid-email":
+        msg.textContent = "❌ Email inválido";
+        break;
+
+      case "auth/user-not-found":
+        msg.textContent = "❌ Usuario no encontrado";
+        break;
+
+      case "auth/wrong-password":
+        msg.textContent = "❌ Contraseña incorrecta";
+        break;
+
+      case "auth/email-already-in-use":
+        msg.textContent = "❌ El email ya existe";
+        break;
+
+      case "auth/weak-password":
+        msg.textContent = "❌ Contraseña demasiado débil";
+        break;
+
+      default:
+        msg.textContent = "❌ " + e.message;
+    }
   }
 };
 
-/* Recuperar contraseña */
-document.getElementById("resetPass").onclick = async () => {
-  const emailVal = email.value;
-  const msg = document.getElementById("msg");
 
-  if (!emailVal) {
-    msg.style.color="red";
-    msg.textContent = "❌ Escribe tu email para recuperar la contraseña";
+/* Recuperar contraseña */
+
+document.getElementById("resetPass").onclick = async () => {
+
+  const emailVal = emailInput.value.trim();
+
+  if(!emailVal){
+
+    msg.style.color = "red";
+
+    msg.textContent =
+      "❌ Escribe tu email";
+
     return;
   }
 
-  try {
+  try{
+
     await sendPasswordResetEmail(auth, emailVal);
-    msg.style.color="green";
-    msg.textContent = "📩 Se envió un email para restablecer tu contraseña";
-  } catch (e) {
-    msg.style.color="red";
+
+    msg.style.color = "green";
+
+    msg.textContent =
+      "📩 Revisa tu correo para restablecer contraseña";
+
+  }catch(e){
+
+    msg.style.color = "red";
+
     msg.textContent = "❌ " + e.message;
   }
 };
+
+
+/* Usuario ya logueado */
+
+onAuthStateChanged(auth, (user) => {
+
+  if(user){
+
+    console.log("Usuario activo:", user.email);
+  }
+});
+
 </script>
 
 </body>
 </html>
+
